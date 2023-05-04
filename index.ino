@@ -1,50 +1,42 @@
-#include <Servo.h>   
-Servo servo;     
-int trigPin = 5;    
-int echoPin = 6;   
-int servoPin = 7;
-int led= 10;
-long duration, dist, average;   
-long aver[3];   
+#include <Servo.h>
 
+// Define the IR sensor input pin and the servo output pin
+const int sensorPin = 6;
+const int servoPin = 7;
 
-void setup() {       
-    Serial.begin(9600);
-    servo.attach(servoPin);  
-    pinMode(trigPin, OUTPUT);  
-    pinMode(echoPin, INPUT);  
-    servo.write(0);         
-    delay(100);
-    servo.detach(); 
-} 
+// Create a Servo object to control the servo motor
+Servo servo;
 
-void measure() {  
- digitalWrite(10,HIGH);
-digitalWrite(trigPin, LOW);
-delayMicroseconds(5);
-digitalWrite(trigPin, HIGH);
-delayMicroseconds(15);
-digitalWrite(trigPin, LOW);
-pinMode(echoPin, INPUT);
-duration = pulseIn(echoPin, HIGH);
-dist = (duration/2) / 29.1;    
+// Flag to indicate whether the servo has already been activated
+bool servoActivated = false;
+
+void setup() {
+  // Attach the servo to its pin
+  servo.attach(servoPin);
+      servo.write(180); // Set the servo to 90 degrees
+
+  // Set up the serial monitor
+  Serial.begin(9600);
 }
-void loop() { 
-  for (int i=0;i<=2;i++) {   
-    measure();               
-   aver[i]=dist;            
-    delay(10);              
+
+void loop() {
+  // If the servo has already been activated, do nothing
+  if (servoActivated) {
+    return;
   }
- dist=(aver[0]+aver[1]+aver[2])/3;    
 
-if ( dist<20 ) {
- servo.attach(servoPin);
-  delay(1);
- servo.write(0);  
- delay(3000);       
- servo.write(150);    
- delay(1000);
- servo.detach();      
-}
-Serial.print(dist);
+  // Read the input from the IR sensor
+  int sensorValue = digitalRead(sensorPin);
+
+  // If the sensor input is HIGH, activate the servo motor
+  if (sensorValue == HIGH) {
+    Serial.println("Sensor input received, activating servo.");
+    servo.write(0); // Set the servo to 90 degrees
+    delay(1000);     // Wait 1 second before resetting the servo
+    servo.detach();  // Set the servo back to 0 degrees
+    servoActivated = true; // Set the flag to indicate that the servo has been activated
+  }
+
+  // Wait for a short time before checking the sensor input again
+  delay(100);
 }
