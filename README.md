@@ -7,3 +7,4 @@ Rat Trap for catching the big rats at 33 Guilden
 
 Demo: https://user-images.githubusercontent.com/24644507/236703426-cc30c6ee-5a3c-4437-9da8-4a03e891a1d7.MOV
 
+![ratTrapDiagram](https://user-images.githubusercontent.com/24644507/236703757-00708c28-dd23-4a2b-aa92-859387852078.JPG)
